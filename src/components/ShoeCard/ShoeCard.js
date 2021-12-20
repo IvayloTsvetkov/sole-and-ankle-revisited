@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components/macro';
+import React from "react";
+import styled from "styled-components/macro";
 
-import { COLORS, WEIGHTS } from '../../constants';
-import { formatPrice, pluralize, isNewShoe } from '../../utils';
-import Spacer from '../Spacer';
+import { COLORS, QUERIES, WEIGHTS } from "../../constants";
+import { formatPrice, pluralize, isNewShoe } from "../../utils";
+import Spacer from "../Spacer";
 
 const ShoeCard = ({
   slug,
@@ -36,28 +36,25 @@ const ShoeCard = ({
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
-          {variant === 'on-sale' && <SaleFlag>Sale</SaleFlag>}
-          {variant === 'new-release' && (
-            <NewFlag>Just released!</NewFlag>
-          )}
         </ImageWrapper>
+        {variant === "on-sale" && <SaleFlag>Sale</SaleFlag>}
+        {variant === "new-release" && <NewFlag>Just released!</NewFlag>}
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
           <Price
             style={{
-              '--color':
-                variant === 'on-sale' ? COLORS.gray[700] : undefined,
-              '--text-decoration':
-                variant === 'on-sale' ? 'line-through' : undefined,
+              "--color": variant === "on-sale" ? COLORS.gray[700] : undefined,
+              "--text-decoration":
+                variant === "on-sale" ? "line-through" : undefined,
             }}
           >
             {formatPrice(price)}
           </Price>
         </Row>
         <Row>
-          <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
-          {variant === 'on-sale' ? (
+          <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
+          {variant === "on-sale" ? (
             <SalePrice>{formatPrice(salePrice)}</SalePrice>
           ) : undefined}
         </Row>
@@ -71,15 +68,29 @@ const Link = styled.a`
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
-
-const ImageWrapper = styled.div`
+const Wrapper = styled.article`
   position: relative;
 `;
 
-const Image = styled.img`
-  width: 100%;
+const ImageWrapper = styled.div`
+  overflow: hidden;
   border-radius: 16px 16px 4px 4px;
+`;
+
+const Image = styled.img`
+  display: block;
+  width: 100%;
+  transform-origin: center 80%;
+
+  @media (hover: hover) and ${QUERIES.showMotion} {
+    transform: scale(1.1);
+    will-change: transform;
+    transition: transform 400ms;
+    &:hover,
+    &:focus {
+      transition: transform 200ms;
+    }
+  }
 `;
 
 const Row = styled.div`
@@ -90,7 +101,7 @@ const Row = styled.div`
 
 const Name = styled.h3`
   font-weight: ${WEIGHTS.medium};
-  color: ${COLORS.gray[900]};
+  color: var(--color-gray-900);
 `;
 
 const Price = styled.span`
@@ -99,12 +110,12 @@ const Price = styled.span`
 `;
 
 const ColorInfo = styled.p`
-  color: ${COLORS.gray[700]};
+  color: var(--color-gray-700);
 `;
 
 const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
-  color: ${COLORS.primary};
+  color: var(--color-primary);
 `;
 
 const Flag = styled.div`
@@ -117,15 +128,26 @@ const Flag = styled.div`
   padding: 0 10px;
   font-size: ${14 / 18}rem;
   font-weight: ${WEIGHTS.bold};
-  color: ${COLORS.white};
+  color: var(--color-white);
   border-radius: 2px;
+  width: fit-content;
+
+  @media (hover: hover) and ${QUERIES.showMotion} {
+    will-change: transform, left, right;
+    transition: transform 500ms, left 500ms, right 500ms;
+    ${Link}:hover &,
+    ${Link}:focus & {
+      transform: translateX(100%) rotate(360deg);
+      right: calc(100% + 4px);
+    }
+  }
 `;
 
 const SaleFlag = styled(Flag)`
-  background-color: ${COLORS.primary};
+  background-color: var(--color-primary);
 `;
 const NewFlag = styled(Flag)`
-  background-color: ${COLORS.secondary};
+  background-color: var(--color-secondary);
 `;
 
 export default ShoeCard;
